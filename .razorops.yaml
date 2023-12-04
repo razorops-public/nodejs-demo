@@ -1,8 +1,13 @@
 
 tasks:
-  test:
+  run-test:
     steps:
     - checkout
-    - commands:
-      - npm ci
-      - npm test
+    - cache/pull:
+        key: npm-cache-{{ checksum "package-lock.json" }}
+    - run:  npm ci
+    - cache/push:
+        key: npm-cache-{{ checksum "package-lock.json" }}
+        paths:
+        - node_modules
+    - run: npm test
